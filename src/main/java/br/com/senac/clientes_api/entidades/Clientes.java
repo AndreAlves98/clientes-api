@@ -16,17 +16,18 @@ public class Clientes {
     @Column(nullable = false, length = 50)
     private String nome;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String email;
 
-    @Column
+    @Column(length = 20)
     private String documento;
 
     @Column
     private LocalDate dataNascimento;
 
 
-    @OneToMany(mappedBy = "cliente")
+    // salva com o endereço
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Enderecos> enderecos;
 
