@@ -35,7 +35,41 @@ public class EnderecosService {
         enderecosSaida.setCidade(dto.getCidade());
         enderecosSaida.setUf(dto.getUf());
         enderecosSaida.setComplemento(dto.getComplemento());
-        
+
         return enderecosRepositorio.save(enderecosSaida);
+    }
+
+    // ATUALIZAR
+    public Enderecos atualizar(Long id, EnderecosRequestDto dto) {
+        Enderecos existente = this.buscarPorId(id);
+        this.copiarDadosParaEntidade(dto, existente);
+        return enderecosRepositorio.save(existente);
+    }
+
+    // METODO PARA BUSCAR POR ID
+    public Enderecos buscarPorId(Long id) {
+        return enderecosRepositorio.findById(id)
+                .orElseThrow(() -> new RuntimeException("Endereço não encontrado"));
+    }
+
+    //DELETAR
+    public void deletar(Long id) {
+        if (!enderecosRepositorio.existsById(id)) {
+            throw new RuntimeException("Endereço não encontrado");
+        }
+        enderecosRepositorio.deleteById(id);
+    }
+
+    private void copiarDadosParaEntidade(EnderecosRequestDto entrada, Enderecos saida) {
+        Clientes cliente = clientesRepositorio.findById(entrada.getClienteId())
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+
+        saida.setCep(entrada.getCep());
+        saida.setLogradouro(entrada.getLogradouro());
+        saida.setBairro(entrada.getBairro());
+        saida.setCidade(entrada.getCidade());
+        saida.setUf(entrada.getUf());
+        saida.setComplemento(entrada.getComplemento());
+        saida.setCliente(cliente);
     }
 }

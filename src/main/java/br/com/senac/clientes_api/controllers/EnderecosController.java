@@ -5,15 +5,11 @@ import br.com.senac.clientes_api.entidades.Enderecos;
 import br.com.senac.clientes_api.services.EnderecosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/enderecos")
 public class EnderecosController {
 
@@ -21,7 +17,7 @@ public class EnderecosController {
     private EnderecosService enderecosService;
 
     @GetMapping("/listar")
-    public ResponseEntity<List<Enderecos>> listarTodos() {
+    public ResponseEntity<List<Enderecos>> listar() {
         return ResponseEntity.ok(enderecosService.listar());
     }
 
@@ -42,5 +38,38 @@ public class EnderecosController {
         }
     }
 
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<Enderecos> atualizar(
+            @PathVariable Long id,
+            @RequestBody EnderecosRequestDto enderecos
+    ) {
+        try {
+            return ResponseEntity.ok(enderecosService.atualizar(id, enderecos));
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(null);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .internalServerError()
+                    .body(null);
+        }
+    }
+
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        try {
+            enderecosService.deletar(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .build();
+        } catch (Exception e) {
+            return ResponseEntity
+                    .internalServerError()
+                    .build();
+        }
+    }
 
 }
